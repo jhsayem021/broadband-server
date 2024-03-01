@@ -3,15 +3,6 @@ const app = express();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const formData = require('form-data');
-const Mailgun = require('mailgun.js');
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({
-  username: 'api',
-  key: process.env.MAIL_GUN_API_KEY,
-});
-
 
 const port = process.env.PORT || 5000;
 
@@ -206,7 +197,7 @@ console.log(result);
       }
       const result = await userCollection.updateOne(filter, updatedDoc);
       res.send(result);
-    })
+    });
 
 
     // Send a ping to confirm a successful connection
