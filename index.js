@@ -81,7 +81,7 @@ async function run() {
       const result = await customerCollection.find().toArray();
       res.send(result);
     });
-    app.post('/customer', verifyToken, verifyAdmin, async (req, res) => {
+    app.post('/customer', verifyToken,async (req, res) => {
       const customers = req.body;
       const findCustomer = await customerCollection.find().toArray()
       const alreadyCustomer = findCustomer.filter(customer=>customer?.email === customers.email);
