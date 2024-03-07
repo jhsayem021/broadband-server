@@ -84,7 +84,7 @@ async function run() {
     app.post('/customer', verifyToken,async (req, res) => {
       const customers = req.body;
       const findCustomer = await customerCollection.find().toArray()
-      const alreadyCustomer = findCustomer.filter(customer=>customer?.email === customers.email);
+      const alreadyCustomer = findCustomer.filter(customer=>customer?.phone === customers.phone);
       // console.log(alreadyCustomer);
       if(alreadyCustomer.length > 0){
         res.send("Oop! Customer already added")
@@ -160,13 +160,12 @@ const options = { upsert: true };
 // console.log(options)
 const updateDoc = {
     $set: {
-
-      bankTransferStatus: true,
-
+     bankTransferStatus: true
     }
 }
 const result = await customerPaymentCollection.updateOne(filter, updateDoc, options)
 console.log(result);
+res.send(result)
   
 }
 )
