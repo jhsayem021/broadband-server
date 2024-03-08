@@ -73,13 +73,82 @@ async function run() {
     // users related api
     app.get('/users', verifyToken, async (req, res) => {
       const result = await userCollection.find().toArray();
+   
       res.send(result);
     });
 
     // Customers related api
-    app.get('/customers', verifyToken, async (req, res) => {
+    app.get('/customers', async (req, res) => {
       const result = await customerCollection.find().toArray();
+      
+      result.map(customer =>  { 
+        console.log(customer.date)
+        if (customer.date === 'undefined'){
+          console.log("check")
+          const id = customer._id;
+          const filter = { _id: new ObjectId(id) };
+          const options = { upsert: true };
+          const updateDoc = {
+              $set: {
+                  status: 'unpaid',
+              }
+          }
+          const setStatus = customerCollection.updateOne(filter, updateDoc, options)
+
+        }
+        else {
+          var date = new Date();
+          let dateNow = new Date(date);
+          var d1 = new Date(dateNow).getDate();
+          var m1 = (new Date(dateNow).getMonth()) + 1;
+          var y1 = new Date(dateNow).getFullYear();
+          var d = new Date(customer.date).getDate();
+          var m = (new Date(customer.date).getMonth()) + 1;
+          var y = new Date(customer.date).getFullYear();
+          if (y1 === y) {
+    
+            if ((m === m1)) {
+    
+              if ((d >= 1) && (d < d1)) {
+                const id = customer._id;
+                const filter = { _id: new ObjectId(id) };
+                const options = { upsert: true };
+                const updateDoc = {
+                    $set: {
+                        status: 'unpaid',
+                    }
+                }
+                const setStatus =  customerCollection.updateOne(filter, updateDoc, options)
+              }
+            }
+           if ((m < m1) && (m > 12)) {
+            const id = customer._id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: 'unpaid',
+                }
+            }
+            const setStatus = customerCollection.updateOne(filter, updateDoc, options)
+            }
+          }
+          else if (y < y1) {
+            const id = customer._id;
+          const filter = { _id: new ObjectId(id) };
+          const options = { upsert: true };
+          const updateDoc = {
+              $set: {
+                  status: 'unpaid',
+              }
+          }
+          const setStatus = customerCollection.updateOne(filter, updateDoc, options)
+          console.log(setStatus);
+          }
+        }
+      })
       res.send(result);
+   
     });
     app.post('/customer', verifyToken,async (req, res) => {
       const customers = req.body;
@@ -107,8 +176,6 @@ async function run() {
     res.send(result);
 })
 
-
-
     // Customer Payment Related Api
     app.get('/customerspayment', verifyToken, async (req, res) => {
       const result = await customerPaymentCollection.find().toArray();
@@ -135,7 +202,6 @@ async function run() {
       const result = await customerCollection.updateOne(filter, updateDoc, options)
       res.send(result);
   })
-
 
   app.post('/updatepaymentsdate', async (req, res) => {
 
@@ -169,8 +235,6 @@ res.send(result)
   
 }
 )
-
-
     app.post('/users', async (req, res) => {
       const user = req.body;
       // console.log(user)
