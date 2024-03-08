@@ -82,9 +82,9 @@ async function run() {
       const result = await customerCollection.find().toArray();
       
       result.map(customer =>  { 
-        console.log(customer.date)
+       
         if (customer.date === 'undefined'){
-          console.log("check")
+        
           const id = customer._id;
           const filter = { _id: new ObjectId(id) };
           const options = { upsert: true };
@@ -216,23 +216,23 @@ async function run() {
 app.put('/banktransfer', async (req, res) => {
 
   const data = req.body;
-
-  console.log(data);
-  const id = data.spid;
-  console.log(id);
-const filter = { spid: id };
-// console.log(filter)
-const options = { upsert: true };
-// console.log(options)
-const updateDoc = {
-    $set: {
-     bankTransferStatus: true
+  let result;
+  // console.log(data);
+    data.map( async singleData=>{
+      const id = singleData._id;
+      console.log(id);
+    const filter = { _id: new ObjectId(id) };
+    const options = { upsert: true };
+    const updateDoc = {
+        $set: {
+         bankTransferStatus: true
+        }
     }
-}
-const result = await customerPaymentCollection.updateOne(filter, updateDoc, options)
-console.log(result);
-res.send(result)
-  
+    result = await customerPaymentCollection.updateOne(filter, updateDoc, options)
+    
+    
+    })
+    res.send(result);
 }
 )
     app.post('/users', async (req, res) => {
